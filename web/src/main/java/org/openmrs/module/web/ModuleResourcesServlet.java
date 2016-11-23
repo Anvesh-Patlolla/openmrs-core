@@ -12,6 +12,7 @@ package org.openmrs.module.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,7 +32,79 @@ public class ModuleResourcesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1239820102030344L;
 	
 	private Log log = LogFactory.getLog(this.getClass());
-	
+
+	private static HashSet<String> legitFileLocations = null;
+
+	static {
+		legitFileLocations = new HashSet<>();
+		String locations[] = {
+		"/legacyui/scripts/openmrs.js",
+		"/legacyui/scripts/openmrs.js",
+		"/legacyui/css/openmrs.css",
+		"/legacyui/css/openmrs.css",
+		"/legacyui/css/openmrs_green.css",
+		"/legacyui/css/openmrs_green.css",
+		"/legacyui/css/style.css",
+		"/legacyui/css/style.css",
+		"/legacyui/scripts/html-sanitizer-min.js",
+		"/legacyui/scripts/html-sanitizer-min.js",
+		"/legacyui/images/openmrs_logo_text_small.png",
+		"/legacyui/images/openmrs_logo_text_small.png",
+		"/legacyui/images/openmrs_green_bar.gif",
+		"/legacyui/images/openmrs_green_bar.gif",
+		"/legacyui/images/openmrs_logo_tiny.png",
+		"/legacyui/images/openmrs_logo_tiny.png",
+		"/legacyui/images/openmrs_green_bar_repeat.gif",
+		"/legacyui/images/openmrs_green_bar_repeat.gif",
+		"/legacyui/images/info.gif",
+		"/legacyui/images/info.gif",
+		"/legacyui/scripts/openmrs.js",
+		"/legacyui/css/openmrs.css",
+		"/legacyui/css/openmrs_green.css",
+		"/legacyui/css/style.css",
+		"/legacyui/scripts/html-sanitizer-min.js",
+		"/legacyui/images/openmrs_logo_text_small.png",
+		"/legacyui/images/openmrs_green_bar.gif",
+		"/legacyui/images/openmrs_logo_tiny.png",
+		"/legacyui/scripts/openmrs.js",
+		"/legacyui/css/openmrs.css",
+		"/legacyui/css/openmrs_green.css",
+		"/legacyui/css/style.css",
+		"/legacyui/scripts/html-sanitizer-min.js",
+		"/legacyui/images/openmrs_logo_text_small.png",
+		"/legacyui/images/openmrs_green_bar.gif",
+		"/legacyui/images/openmrs_logo_white_large.png",
+		"/legacyui/images/openmrs_logo_white_large.png",
+		"/legacyui/images/openmrs_logo_tiny.png",
+		"/legacyui/scripts/openmrs.js",
+		"/legacyui/css/openmrs.css",
+		"/legacyui/css/openmrs_green.css",
+		"/legacyui/css/style.css",
+		"/legacyui/scripts/html-sanitizer-min.js",
+		"/legacyui/images/openmrs_logo_text_small.png",
+		"/legacyui/images/openmrs_green_bar.gif",
+		"/legacyui/images/openmrs_logo_tiny.png",
+		"/legacyui/scripts/openmrs.js",
+		"/legacyui/css/openmrs.css",
+		"/legacyui/css/openmrs_green.css",
+		"/legacyui/css/style.css",
+		"/legacyui/scripts/html-sanitizer-min.js",
+		"/legacyui/images/openmrs_logo_text_small.png",
+		"/legacyui/images/openmrs_green_bar.gif",
+		"/legacyui/images/openmrs_logo_tiny.png",
+		"/legacyui/scripts/openmrs.js",
+		"/legacyui/css/openmrs.css",
+		"/legacyui/css/openmrs_green.css",
+		"/legacyui/css/style.css",
+		"/legacyui/scripts/html-sanitizer-min.js",
+		"/legacyui/images/openmrs_logo_text_small.png",
+		"/legacyui/images/openmrs_green_bar.gif",
+		"/legacyui/images/openmrs_logo_tiny.png"};
+		for(String location: locations){
+			legitFileLocations.add(location);
+		}
+	}
+
 	/**
 	 * Used for caching purposes
 	 *
@@ -82,7 +155,10 @@ public class ModuleResourcesServlet extends HttpServlet {
 	protected File getFile(HttpServletRequest request) {
 		
 		String path = request.getPathInfo();
-		
+		if(!legitFileLocations.contains(path)){
+			log.error("No such path exits: " + path);
+			return null;
+		}
 		Module module = ModuleUtil.getModuleForPath(path);
 		if (module == null) {
 			log.warn("No module handles the path: " + path);
